@@ -23,7 +23,7 @@
         <span class="float-left" ng-show="editingMode()">
             <button class="btn btn-secondary btn-delete" ng-click="delete('delete')">
               <i class="fa fa-trash-o"></i>
-                Delete
+                Slet
              </button>
          </span>
       {% endblock %}
@@ -35,12 +35,12 @@
 
   <span ng-show="form">
     <button check-form="form" class="btn btn-primary btn-save" ng-click="form.$valid && save('save')">
-      <i class="fa fa-save"></i> Save
+      <i class="fa fa-save"></i> Gem
     </button>
   </span>
   <span ng-hide="form">
     <button class="btn btn-primary btn-save" ng-click="save('save')">
-      <i class="fa fa-save"></i> Save
+      <i class="fa fa-save"></i> Gem
     </button>
   </span>
 
