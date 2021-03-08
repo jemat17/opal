@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3>
-      <i class="fa fa-user"></i> Demographics
+      <i class="fa fa-user"></i> Patient Info
       <i class="fa fa-pencil edit pull-right"
          ng-click="patient.recordEditor.editItem('demographics', patient.demographics[0])"></i>
     </h3>
@@ -34,7 +34,7 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <b>DOB</b>
+        <b>Fødselsdato</b>
       </div>
       <div class="col-md-8">
         [[ patient.demographics[0].date_of_birth | displayDate ]]
@@ -42,7 +42,7 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <b>Sex</b>
+        <b>Køn</b>
       </div>
       <div class="col-md-8">
         [[ patient.demographics[0].sex ]]
@@ -50,7 +50,7 @@
     </div>
     <div ng-show="patient.demographics[0].birth_place" class="row">
       <div class="col-md-4">
-        <b>Birth place</b>
+        <b>Fødselsby</b>
       </div>
       <div class="col-md-8">
         [[ patient.demographics[0].birth_place ]]
@@ -58,7 +58,7 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <b>Ethnicity</b>
+        <b>Etnicitet</b>
       </div>
       <div class="col-md-8">
         [[ patient.demographics[0].ethnicity ]]
