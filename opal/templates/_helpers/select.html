@@ -21,12 +21,12 @@
         <option value="" selected>---------</option>
         {% endif %}
         <option ng-repeat="i in {{ lookuplist }} track by $index">[[ i ]]</option>
-        {% if other %}<option>Other</option>{% endif %}
+        {% if other %}<option>Anden</option>{% endif %}
       </select>
     {% endif %}
     {% if required %}
       <span ng-show="{{ formname }}.$submitted && {{ formname }}[{{ element_name }}].$error.required" class="help-block">
-        {{ label }} is required
+        {{ label }} er nødvendig.
       </span>
       {% endif %}
       {% if help_text %}
@@ -44,7 +44,7 @@
 
          >
         <i class="fa fa-question-circle"></i>
-        More details about {{ label }}
+        Flere detaljer omkring {{ label }}
       </p>
       <script type="text/ng-template" id="{{ help_template }}">
         {% include help_template %}

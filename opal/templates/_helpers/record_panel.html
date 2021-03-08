@@ -1,6 +1,6 @@
 {% comment %}
-  if we're looking at a patient subrecord and the patient exists use the patient as the parent
-  otherwise use the episode as the parent
+Hvis vi kigger på patient undersystem og patienten eksistere bruger vi patienten som forældre klasse. 
+Ellers bruges episoden som forælder klasse. 
 {% endcomment %}
 {% if is_patient_subrecord %}
 <div ng-repeat="parent in [patient || episode]">
