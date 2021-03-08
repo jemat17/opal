@@ -4,10 +4,10 @@
     <span ng-hide="item.updated">
       <img class="text-avatar" avatar-for-user="[[ item.created_by_id ]]">
       <span ng-show="item.created_by_id">
-      {% trans "Created by" %}
+      {% trans "Oprettet af" %}
       </span>
       <span ng-hide="item.created_by_id">
-        {% trans "Created" %}
+        {% trans "Oprettet" %}
       </span>
       <span full-name-for-user="[[ item.created_by_id ]]"></span>
       [[ item.created | displayDate ]]
@@ -15,10 +15,10 @@
     <span ng-show="item.updated">
       <img class="text-avatar" avatar-for-user="[[ item.updated_by_id ]]">
       <span ng-show="item.created_by_id">
-        {% trans "Last updated by" %}
+        {% trans "Senest opdateret af" %}
       </span>
       <span ng-hide="item.created_by_id">
-        {% trans "Last updated" %}
+        {% trans "Senest opdateret" %}
       </span>
       <span full-name-for-user="[[ item.updated_by_id ]]"></span>
       [[ item.updated | displayDate ]]
