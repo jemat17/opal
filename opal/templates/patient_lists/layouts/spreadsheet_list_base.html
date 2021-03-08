@@ -39,7 +39,7 @@
           <li class="list-group-item">
             <p>
               <a class="btn btn-secondary screen-only" ng-href='[[ "#/patient/" + episode.demographics[0].patient_id + "/" + episode.id]]'>
-                <i class="fa fa-search-plus"></i> Patient Details
+                <i class="fa fa-search-plus"></i> Patient Oplysninger
               </a>
             </p>
           </li>
@@ -58,7 +58,7 @@
         <div class="panel-heading">
           <h4>
             <i class="fa fa-filter"></i>
-            Filters
+            Filtre
           </h4>
         </div>
         <div class="panel-body">
@@ -86,7 +86,7 @@
         <div class="visible-sm panel panel-active">
           {% block spreadsheet_list_small %}
           <div class="panel-heading">
-            <i class="fa fa-users"></i> Patients
+            <i class="fa fa-users"></i> Patienter
           </div>
           <ul class="list-group">
             <li class="list-group-item spreadsheet-view" ng-repeat="row in rows" ng-class="{selected: episode.id == row.id}">
@@ -147,7 +147,7 @@
         			    ng-dblclick="editNamedItem(row, '{{ column.name  }}', row.{{column.name}}.length)"
         			    >
         			  <span ng-show="!profile.readonly">
-        			    Add
+        			    Tilføj
                       <i class="glyphicon glyphicon-plus pull-right"></i>
         			  </span>
         			  &nbsp;
@@ -158,7 +158,7 @@
         			    ng-dblclick="editNamedItem(row, '{{ column.name }}', 0)"
         			    >
         			  <span ng-show="!profile.readonly">
-        			    Edit <i class="glyphicon glyphicon-pencil pull-right"></i>
+        			    Rediger <i class="glyphicon glyphicon-pencil pull-right"></i>
         			  </span>
         			  &nbsp;
         		    </li>
@@ -174,7 +174,7 @@
         </table>
         <div class="empty-list" ng-hide="num_episodes > 0">
           <p class="lead text-center">
-            There are no patients on this list.
+            Der er ingen patienter på denne liste.
           </p>
         </div>
         {% endblock table %}
@@ -183,7 +183,7 @@
       {% block spreadsheet_list_footer %}
       <footer class="text-center keyboard-shortcuts screen-only">
         <a class="pointer screen-only" ng-click="keyboard_shortcuts($event)">
-          <i class="fa fa-keyboard-o"></i> Keyboard shortcuts available
+          <i class="fa fa-keyboard-o"></i> Tastaturgenveje er tilgængelige
         </a>
       </footer>
       {% endblock spreadsheet_list_footer %}
