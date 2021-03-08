@@ -1,6 +1,6 @@
 {% comment %}
-Hvis vi kigger på patient undersystem og patienten eksistere bruger vi patienten som forældre klasse. 
-Ellers bruges episoden som forælder klasse. 
+Hvis vi kigger paa patient undersystem og patienten eksistere bruger vi patienten som foraeldre klasse. 
+Ellers bruges episoden som foraelder klasse. 
 {% endcomment %}
 {% if is_patient_subrecord %}
 <div ng-repeat="parent in [patient || episode]">

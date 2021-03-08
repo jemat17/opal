@@ -147,7 +147,7 @@
         			    ng-dblclick="editNamedItem(row, '{{ column.name  }}', row.{{column.name}}.length)"
         			    >
         			  <span ng-show="!profile.readonly">
-        			    Tilføj
+        			    Tilfoej
                       <i class="glyphicon glyphicon-plus pull-right"></i>
         			  </span>
         			  &nbsp;
@@ -174,7 +174,7 @@
         </table>
         <div class="empty-list" ng-hide="num_episodes > 0">
           <p class="lead text-center">
-            Der er ingen patienter på denne liste.
+            Der er ingen patienter paa denne liste.
           </p>
         </div>
         {% endblock table %}
@@ -183,7 +183,7 @@
       {% block spreadsheet_list_footer %}
       <footer class="text-center keyboard-shortcuts screen-only">
         <a class="pointer screen-only" ng-click="keyboard_shortcuts($event)">
-          <i class="fa fa-keyboard-o"></i> Tastaturgenveje er tilgængelige
+          <i class="fa fa-keyboard-o"></i> Tastaturgenveje er tilgaengelige
         </a>
       </footer>
       {% endblock spreadsheet_list_footer %}
