@@ -34,13 +34,13 @@
                />
      {% if required %}
      <span class="help-block" ng-show="({{ formname }}[{{ element_name }}].$dirty || {{ formname }}.$submitted) && {{ formname }}[{{ element_name }}].$error.required">
-        {{ label }} is required
+        {{ label }} er nødvendig
      </span>
      {% endif %}
      {% if user_options %}
          <span class="input-group-btn">
-           <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.now()" href="">Today</a>
-           <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.yesterday()" href="">Yesterday</a>
+           <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.now()" href="">I dag</a>
+           <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.yesterday()" href="">I går</a>
          </span>
        </div>
      {% endif %}
