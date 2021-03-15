@@ -1,7 +1,7 @@
 {% load forms %}
 <div class="row" ng-if="state == 'initial'">
     <div class="col-sm-8">
-      <h4>Hospital number</h4>
+      <h4>Hospital nummer</h4>
       <input required autofocus class="form-control" type="text"
              ng-model="demographics.hospital_number"
              ng-keypress="$event.keyCode == 13 && lookup_hospital_number()"
@@ -9,12 +9,11 @@
       <br />
       <a class="btn btn-lg btn-primary" ng-click="lookup_hospital_number()">
         <i class="fa fa-search"></i>
-        Search
+        S&oslash;g
       </a>
       <br />
       <p>
-        If we already have your patient on the system, we can pull their
-        details for you
+        Hvis patienten allerede er i systemet, kan vi finde deres detaljer for dig.
       </p>
     </div>
 </div>
@@ -50,8 +49,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4">
-        <b>Name</b>
+      <div class="col-md-4">Navn</b>
       </div>
       <div class="col-md-8">
         [[ demographics.first_name ]]
@@ -60,7 +58,7 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <b>Date of Birth</b>
+        <b>F&oslash;dselsdag</b>
       </div>
       <div class="col-md-8">
         [[ demographics.date_of_birth | displayDate ]]
@@ -68,7 +66,7 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <b>Gender</b>
+        <b>K&oslash;n</b>
       </div>
       <div class="col-md-8">
         [[ demographics.sex ]]
