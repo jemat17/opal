@@ -45,12 +45,12 @@
            />
     {% if maxlength %}
         <span class="help-block" ng-show="({{ formname }}.$submitted || {{ formname }}[{{ element_name }}].$invalid) && {{ formname }}[{{ element_name }}].$error.maxlength">
-          Maksimum laengde er {{ maxlength }}
+          Maksimum l&aelig;ngde er {{ maxlength }}
         </span>
     {% endif %}
     {% if required %}
       <span class="help-block" ng-show="({{ formname }}[{{ element_name }}].$dirty || {{ formname }}.$submitted) && {{ formname }}[{{ element_name }}].$error.required">
-        {{ label }} er noedvendig
+        {{ label }} er n&oslash;dvendig
       </span>
     {% endif %}
   </div>
