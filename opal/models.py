@@ -627,22 +627,22 @@ class TrackedModel(models.Model):
     created = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=_("Created")
+        verbose_name=_("oprettet")
     )
     updated = models.DateTimeField(
-        blank=True, null=True, verbose_name=_("Updated")
+        blank=True, null=True, verbose_name=_("Updateret")
     )
     created_by = models.ForeignKey(
         User, blank=True, null=True,
         related_name="created_%(app_label)s_%(class)s_subrecords",
         on_delete=models.SET_NULL,
-        verbose_name=_("Created By")
+        verbose_name=_("oprettet af")
     )
     updated_by = models.ForeignKey(
         User, blank=True, null=True,
         related_name="updated_%(app_label)s_%(class)s_subrecords",
         on_delete=models.SET_NULL,
-        verbose_name=_("Updated By")
+        verbose_name=_("Updateret af")
     )
 
     class Meta:
@@ -680,19 +680,19 @@ class Episode(UpdatesFromDictMixin, TrackedModel):
     category_name     = models.CharField(
         max_length=200,
         default=get_default_episode_type,
-        verbose_name=_("Category Name")
+        verbose_name=_("kategori")
     )
     patient           = models.ForeignKey(
         Patient, on_delete=models.CASCADE, verbose_name=_("Patient")
     )
     active            = models.BooleanField(
-        default=False, verbose_name=_("Active")
+        default=False, verbose_name=_("Aktiv")
     )
     start             = models.DateField(
         null=True, blank=True, verbose_name=_("Start")
     )
     end               = models.DateField(
-        blank=True, null=True, verbose_name=_("End")
+        blank=True, null=True, verbose_name=_("Slut")
     )
     consistency_token = models.CharField(
         max_length=8, verbose_name=_("Consistency Token")
@@ -1095,7 +1095,7 @@ class Tagging(TrackedModel, models.Model):
 
     class Meta:
         unique_together = (('value', 'episode', 'user'))
-        verbose_name = "Teams"
+        verbose_name = "Hold"
 
     def __str__(self):
         if self.user is not None:
@@ -1201,14 +1201,14 @@ class Duration(lookuplists.LookupList):
 
 class Ethnicity(lookuplists.LookupList):
     class Meta:
-        verbose_name = _("Ethnicity")
-        verbose_name_plural = _("Ethnicities")
+        verbose_name = _("Etnicitet")
+        verbose_name_plural = _("Etniciteter")
 
 
 class Gender(lookuplists.LookupList):
     class Meta:
-        verbose_name = _("Gender")
-        verbose_name_plural = _("Genders")
+        verbose_name = _("Køn")
+        verbose_name_plural = _("Køn")
 
 
 class Hospital(lookuplists.LookupList):
@@ -1244,8 +1244,8 @@ class Symptom(lookuplists.LookupList):
 
 class Title(lookuplists.LookupList):
     class Meta:
-        verbose_name = _("Title")
-        verbose_name_plural = _("Titles")
+        verbose_name = _("Titel")
+        verbose_name_plural = _("Titler")
 
 
 class Travel_reason(lookuplists.LookupList):
@@ -1272,15 +1272,15 @@ class Demographics(PatientSubrecord):
     )
 
     surname = models.CharField(
-        max_length=255, blank=True, verbose_name=_("Surname")
+        max_length=255, blank=True, verbose_name=_("Efternavn")
     )
     first_name = models.CharField(
-        max_length=255, blank=True, verbose_name=_("First Name")
+        max_length=255, blank=True, verbose_name=_("Fornavn")
     )
     middle_name = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name=_("Middle Name")
+        max_length=255, blank=True, null=True, verbose_name=_("Mellem navn")
     )
-    title = ForeignKeyOrFreeText(Title, verbose_name=_("Title"))
+    title = ForeignKeyOrFreeText(Title, verbose_name=_("Titel"))
     date_of_birth = models.DateField(
         null=True, blank=True, verbose_name=_("Date of Birth")
     )
@@ -1369,7 +1369,7 @@ Defaults to False."
 
     class Meta:
         abstract = True
-        verbose_name_plural = "Allergies"
+        verbose_name_plural = "Allergier"
 
 
 class Diagnosis(EpisodeSubrecord):
