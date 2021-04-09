@@ -474,7 +474,7 @@ class Patient(models.Model):
 
     objects = managers.PatientQueryset.as_manager()
 
-    def __str__(self):
+    def __str__(self):passwo
         return 'Patient {0}'.format(self.id)
 
     def get_absolute_url(self):
@@ -1183,6 +1183,9 @@ class Destination(lookuplists.LookupList):
 class Drug(lookuplists.LookupList):
     pass
 
+class maxdose(lookuplists.LookupList):
+    pass
+
 
 class Drugfreq(lookuplists.LookupList):
     class Meta:
@@ -1340,9 +1343,10 @@ class Treatment(EpisodeSubrecord):
 
     HELP_START = "The date on which the patient began receiving this \
 treatment."
+    Max_dose = json.load(maxdose)
 
     drug          = ForeignKeyOrFreeText(Drug)
-    dose          = models.IntegerField(blank=True)
+    dose          = models.IntegerField(blank=True,MaxValueValidator(Max_dose[str(drug)], message="too high dose"))
     route         = ForeignKeyOrFreeText(Drugroute)
     start_date    = models.DateField(
         null=True, blank=True,
