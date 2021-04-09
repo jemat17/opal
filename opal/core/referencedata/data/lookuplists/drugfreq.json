@@ -2,39 +2,49 @@
   "drugfreq": [
     {
       "synonyms": [],
-      "name": "Four times a day"
+      "name": "Four times a day",
+      "value": 4
     },
     {
       "synonyms": [],
-      "name": "Once a day"
+      "name": "Once a day",
+      "value":1
     },
     {
       "synonyms": [],
-      "name": "Six times a day"
+      "name": "Six times a day",
+      "value":6
     },
     {
       "synonyms": [],
-      "name": "Three times a day"
+      "name": "Three times a day",
+      "value":3
     },
     {
       "synonyms": [],
-      "name": "Twice a day"
+      "name": "Twice a day",
+      "value":2
     },
     {
       "synonyms": [],
-      "name": "Five Times a Day"
+      "name": "Five Times a Day",
+      "value":5
+
     },
     {
       "synonyms": [],
-      "name": "Once a week"
+      "name": "Once a week",
+      "value":1
     },
     {
       "synonyms": [],
-      "name": "Twice a week"
+      "name": "Twice a week",
+      "value":2
     },
     {
       "synonyms": [],
-      "name": "Three times a week"
+      "name": "Three times a week",
+      "value":3
     }
   ]
 }

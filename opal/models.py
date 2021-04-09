@@ -1342,14 +1342,14 @@ class Treatment(EpisodeSubrecord):
 treatment."
 
     drug          = ForeignKeyOrFreeText(Drug)
-    dose          = models.CharField(max_length=255, blank=True)
+    dose          = models.IntegerField(blank=True)
     route         = ForeignKeyOrFreeText(Drugroute)
     start_date    = models.DateField(
         null=True, blank=True,
         help_text=HELP_START
     )
     end_date      = models.DateField(null=True, blank=True)
-    frequency     = ForeignKeyOrFreeText(Drugfreq)
+    frequency     = ForeignKeyOrFreeText(Drugfreq)  
 
     class Meta:
         abstract = True
