@@ -10,6 +10,7 @@ import logging
 import random
 import os
 
+from django.core.validators import MaxValueValidator
 from django.utils import timezone
 from django.db import models, transaction
 from django.db.models import Q
@@ -21,6 +22,7 @@ from django.core.exceptions import FieldDoesNotExist
 from django.utils.encoding import force_str
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
+from django import forms
 
 from opal.core import (
     application, exceptions, lookuplists, plugins, patient_lists, tagging
@@ -474,7 +476,7 @@ class Patient(models.Model):
 
     objects = managers.PatientQueryset.as_manager()
 
-    def __str__(self):passwo
+    def __str__(self):
         return 'Patient {0}'.format(self.id)
 
     def get_absolute_url(self):
@@ -1343,20 +1345,28 @@ class Treatment(EpisodeSubrecord):
 
     HELP_START = "The date on which the patient began receiving this \
 treatment."
-    Max_dose = json.load(maxdose)
+    with open("/core/referencedata/data/lookuplists/maxdose.json", "r") as read_file:
+        Max_dose = json.load(read_file)
+
 
     drug          = ForeignKeyOrFreeText(Drug)
-    dose          = models.IntegerField(blank=True,MaxValueValidator(Max_dose[str(drug)], message="too high dose"))
+    dose          = models.IntegerField(blank=True, validators=MaxValueValidator(Max_dose[str(drug)], message="high dose"))
     route         = ForeignKeyOrFreeText(Drugroute)
     start_date    = models.DateField(
         null=True, blank=True,
         help_text=HELP_START
     )
     end_date      = models.DateField(null=True, blank=True)
-    frequency     = ForeignKeyOrFreeText(Drugfreq)  
+    frequency     = ForeignKeyOrFreeText(Drugfreq)
+    if dose > Max_dose[str(drug)]:
+        raise ValueError("no patient id found for result in %s" % dose)
+    raise ValueError("dose {}".format(Max_dose[str(drug)]))
 
     class Meta:
         abstract = True
+
+
+
 
 
 class Allergies(PatientSubrecord):
