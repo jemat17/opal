@@ -1,7 +1,8 @@
 {
     "maxdose": [
       {
-        "Abacavir": 50
+        "name":"Abacavir",
+        "value":"50"
       }
     ]
 }

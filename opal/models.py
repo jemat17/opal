@@ -10,7 +10,7 @@ import logging
 import random
 import os
 
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.db import models, transaction
 from django.db.models import Q
@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
-from django.core.exceptions import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.utils.encoding import force_str
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
@@ -46,6 +46,7 @@ class SerialisableFields(object):
     Mixin class that handles the getting of fields
     and field types for serialisation/deserialization
     """
+
     @classmethod
     def _get_fieldnames_to_serialize(cls):
         """
@@ -288,7 +289,7 @@ class UpdatesFromDictMixin(SerialisableFields):
         return 'token'
 
     def set_consistency_token(self):
-        self.consistency_token = '%08x' % random.randrange(16**8)
+        self.consistency_token = '%08x' % random.randrange(16 ** 8)
 
     def get_lookup_list_values_for_names(self, lookuplist, names):
         ct = ContentType.objects.get_for_model(lookuplist)
@@ -402,6 +403,7 @@ class UpdatesFromDictMixin(SerialisableFields):
 class ToDictMixin(SerialisableFields):
     """ serialises a model to a dictionary
     """
+
     def to_dict(self, user, fields=None):
         """
         Allow a subset of FIELDNAMES
@@ -541,7 +543,7 @@ class Patient(models.Model):
 
         for api_name, list_of_upgrades in dict_of_list_of_upgrades.items():
 
-            if(api_name == "tagging"):
+            if (api_name == "tagging"):
                 episode.set_tag_names_from_tagging_dict(
                     list_of_upgrades[0], user
                 )
@@ -588,7 +590,7 @@ class Patient(models.Model):
 
 class PatientRecordAccess(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    user    = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
 
     def to_dict(self, user):
@@ -679,21 +681,21 @@ class Episode(UpdatesFromDictMixin, TrackedModel):
     A patient may have many episodes of care, but this maps to one occasion
     on which they found themselves on "The List".
     """
-    category_name     = models.CharField(
+    category_name = models.CharField(
         max_length=200,
         default=get_default_episode_type,
         verbose_name=_("kategori")
     )
-    patient           = models.ForeignKey(
+    patient = models.ForeignKey(
         Patient, on_delete=models.CASCADE, verbose_name=_("Patient")
     )
-    active            = models.BooleanField(
+    active = models.BooleanField(
         default=False, verbose_name=_("Aktiv")
     )
-    start             = models.DateField(
+    start = models.DateField(
         null=True, blank=True, verbose_name=_("Start")
     )
-    end               = models.DateField(
+    end = models.DateField(
         blank=True, null=True, verbose_name=_("Slut")
     )
     consistency_token = models.CharField(
@@ -702,7 +704,7 @@ class Episode(UpdatesFromDictMixin, TrackedModel):
 
     # stage is at what stage of an episode flow is the
     # patient at
-    stage             = models.CharField(
+    stage = models.CharField(
         max_length=256, null=True, blank=True, verbose_name=_("Stage")
     )
 
@@ -870,13 +872,13 @@ class Episode(UpdatesFromDictMixin, TrackedModel):
         Serialisation to JSON for Episodes
         """
         d = {
-            'id'               : self.id,
-            'category_name'    : self.category_name,
-            'active'           : self.active,
+            'id': self.id,
+            'category_name': self.category_name,
+            'active': self.active,
             'consistency_token': self.consistency_token,
-            'start'            : self.start,
-            'end'              : self.end,
-            'stage'            : self.stage,
+            'start': self.start,
+            'end': self.end,
+            'stage': self.stage,
         }
 
         if shallow:
@@ -901,8 +903,8 @@ class Episode(UpdatesFromDictMixin, TrackedModel):
 
 
 class Subrecord(UpdatesFromDictMixin, ToDictMixin, TrackedModel, models.Model):
-    _is_singleton            = False
-    _advanced_searchable     = True
+    _is_singleton = False
+    _advanced_searchable = True
     _exclude_from_subrecords = False
 
     consistency_token = models.CharField(
@@ -1023,7 +1025,7 @@ class Subrecord(UpdatesFromDictMixin, ToDictMixin, TrackedModel, models.Model):
 
     @classmethod
     def bulk_update_from_dicts(
-        cls, parent, list_of_dicts, user, force=False
+            cls, parent, list_of_dicts, user, force=False
     ):
         """
             allows the bulk updating of a field for example
@@ -1072,7 +1074,6 @@ class PatientSubrecord(Subrecord):
 
 
 class EpisodeSubrecord(Subrecord):
-
     episode = models.ForeignKey(
         Episode,
         null=False,
@@ -1088,12 +1089,12 @@ class Tagging(TrackedModel, models.Model):
     _is_singleton = True
     _advanced_searchable = True
 
-    user     = models.ForeignKey(
+    user = models.ForeignKey(
         User, null=True, blank=True, on_delete=models.CASCADE
     )
-    episode  = models.ForeignKey(Episode, null=False, on_delete=models.CASCADE)
+    episode = models.ForeignKey(Episode, null=False, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)
-    value    = models.CharField(max_length=200, blank=True, null=True)
+    value = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         unique_together = (('value', 'episode', 'user'))
@@ -1184,6 +1185,7 @@ class Destination(lookuplists.LookupList):
 
 class Drug(lookuplists.LookupList):
     pass
+
 
 class maxdose(lookuplists.LookupList):
     pass
@@ -1345,28 +1347,30 @@ class Treatment(EpisodeSubrecord):
 
     HELP_START = "The date on which the patient began receiving this \
 treatment."
-    with open("/core/referencedata/data/lookuplists/maxdose.json", "r") as read_file:
-        Max_dose = json.load(read_file)
 
+    def dose_of(self):
+        dose_of_drug = self.dose
+        try:
+            max_dose = maxdose.objects.filter(name=self.drug)  # tilgå max_dose
+            max_dose = max_dose.max_dose
+            if max_dose < dose_of_drug:
+                raise ValidationError(_('%(max_dose)s must be in the range [0.0, {dose_of_drug}]'),
+                                      params={'max_dose': max_dose, 'dose_of_drug': dose_of_drug}, )
+        except:
+            raise ValidationError(_('A maxdose is not specified for this drug'), )
 
-    drug          = ForeignKeyOrFreeText(Drug)
-    dose          = models.IntegerField(blank=True, validators=MaxValueValidator(Max_dose[str(drug)], message="high dose"))
-    route         = ForeignKeyOrFreeText(Drugroute)
-    start_date    = models.DateField(
+    drug = ForeignKeyOrFreeText(Drug)
+    dose = models.IntegerField(maxdose, blank=True)#, validators=[dose_of])
+    route = ForeignKeyOrFreeText(Drugroute)
+    start_date = models.DateField(
         null=True, blank=True,
         help_text=HELP_START
     )
-    end_date      = models.DateField(null=True, blank=True)
-    frequency     = ForeignKeyOrFreeText(Drugfreq)
-    if dose > Max_dose[str(drug)]:
-        raise ValueError("no patient id found for result in %s" % dose)
-    raise ValueError("dose {}".format(Max_dose[str(drug)]))
+    end_date = models.DateField(null=True, blank=True)
+    frequency = ForeignKeyOrFreeText(Drugfreq)
 
     class Meta:
         abstract = True
-
-
-
 
 
 class Allergies(PatientSubrecord):
@@ -1374,12 +1378,12 @@ class Allergies(PatientSubrecord):
     HELP_PROVISIONAL = "True if the allergy is only suspected. \
 Defaults to False."
 
-    drug        = ForeignKeyOrFreeText(Drug)
+    drug = ForeignKeyOrFreeText(Drug)
     provisional = models.BooleanField(
         default=False, verbose_name="Suspected?",
         help_text=HELP_PROVISIONAL
     )
-    details     = models.CharField(max_length=255, blank=True)
+    details = models.CharField(max_length=255, blank=True)
 
     class Meta:
         abstract = True
@@ -1394,13 +1398,13 @@ class Diagnosis(EpisodeSubrecord):
     _sort = 'date_of_diagnosis'
     _icon = 'fa fa-stethoscope'
 
-    condition         = ForeignKeyOrFreeText(Condition)
-    provisional       = models.BooleanField(
+    condition = ForeignKeyOrFreeText(Condition)
+    provisional = models.BooleanField(
         default=False,
         verbose_name="Provisional?",
         help_text="True if the diagnosis is provisional. Defaults to False"
     )
-    details           = models.TextField(blank=True)
+    details = models.TextField(blank=True)
     date_of_diagnosis = models.DateField(blank=True, null=True)
 
     class Meta:
@@ -1414,8 +1418,8 @@ class PastMedicalHistory(EpisodeSubrecord):
     _icon = 'fa fa-history'
 
     condition = ForeignKeyOrFreeText(Condition)
-    year      = models.CharField(max_length=4, blank=True)
-    details   = models.CharField(max_length=255, blank=True)
+    year = models.CharField(max_length=4, blank=True)
+    details = models.CharField(max_length=255, blank=True)
 
     class Meta:
         abstract = True
@@ -1436,39 +1440,39 @@ class UserProfile(models.Model):
     """
     HELP_RESTRICTED = "This user will only see teams that they have been " \
                       "specifically added to"
-    HELP_READONLY    = "This user will only be able to read data - they " \
-                       "have no write/edit permissions"
-    HELP_EXTRACT     = "This user will be able to download data from " \
-                       "advanced searches"
-    HELP_PW          = "Force this user to change their password on the " \
-                       "next login"
+    HELP_READONLY = "This user will only be able to read data - they " \
+                    "have no write/edit permissions"
+    HELP_EXTRACT = "This user will be able to download data from " \
+                   "advanced searches"
+    HELP_PW = "Force this user to change their password on the " \
+              "next login"
 
-    user                  = models.OneToOneField(
+    user = models.OneToOneField(
         User, related_name='profile',
         on_delete=models.CASCADE
     )
     force_password_change = models.BooleanField(default=True,
                                                 help_text=HELP_PW)
-    can_extract           = models.BooleanField(default=False,
-                                                help_text=HELP_EXTRACT)
-    readonly              = models.BooleanField(default=False,
-                                                help_text=HELP_READONLY)
-    restricted_only       = models.BooleanField(default=False,
-                                                help_text=HELP_RESTRICTED)
-    roles                 = models.ManyToManyField(Role, blank=True)
+    can_extract = models.BooleanField(default=False,
+                                      help_text=HELP_EXTRACT)
+    readonly = models.BooleanField(default=False,
+                                   help_text=HELP_READONLY)
+    restricted_only = models.BooleanField(default=False,
+                                          help_text=HELP_RESTRICTED)
+    roles = models.ManyToManyField(Role, blank=True)
 
     def to_dict(self):
         """
         Return the serialised version of this UserProfile to send to the client
         """
         return {
-            'readonly'   : self.readonly,
+            'readonly': self.readonly,
             'can_extract': self.can_extract,
-            'filters'    : [f.to_dict() for f in self.user.filter_set.all()],
-            'roles'      : self.get_roles(),
-            'full_name'  : self.user.get_full_name(),
-            'avatar_url' : self.get_avatar_url(),
-            'user_id'    : self.user.pk
+            'filters': [f.to_dict() for f in self.user.filter_set.all()],
+            'roles': self.get_roles(),
+            'full_name': self.user.get_full_name(),
+            'avatar_url': self.get_avatar_url(),
+            'user_id': self.user.pk
         }
 
     def get_avatar_url(self):

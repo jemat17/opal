@@ -12,7 +12,7 @@ from opal import utils
 from opal.core import exceptions
 
 
-def get_or_create_lookuplist_item(model, name, code, system):
+def get_or_create_lookuplist_item(model, name, code, system, value):
     """
     Given a lookuplist MODEL, the NAME of an entry, and possibly
     the associated CODE and SYSTEM pair, return an instance.
@@ -25,15 +25,15 @@ def get_or_create_lookuplist_item(model, name, code, system):
     guess the correct thing to do in that scenario.
     """
     try:
-        instance = model.objects.get(name=name, code=code, system=system)
+        instance = model.objects.get(name=name, code=code, system=system, value=value)
         return instance, False
     except model.DoesNotExist:
         if code is not None and system is not None:
-            if model.objects.filter(code=code, system=system).count() > 0:
+            if model.objects.filter(code=code, system=system, value=value).count() > 0:
                 msg = 'Tried to create a lookuplist item with value {0} '
                 msg += 'and code {1} but this code already exists with '
                 msg += 'value {2} and code {3}'
-                existing = model.objects.get(code=code, system=system)
+                existing = model.objects.get(code=code, system=system, value=value)
                 msg = msg.format(name, code, existing.name, existing.code)
                 raise exceptions.InvalidDataError(msg)
 
@@ -41,10 +41,11 @@ def get_or_create_lookuplist_item(model, name, code, system):
             instance = model.objects.get(name=name)
             instance.code = code
             instance.system = system
+            instance.value = value
             instance.save()
             return instance, False
         except model.DoesNotExist:
-            instance = model(name=name, code=code, system=system)
+            instance = model(name=name, code=code, system=system, value=value)
             instance.save()
             return instance, True
 
@@ -64,11 +65,12 @@ def load_lookuplist_item(model, item):
             'Lookuplist entries must have a name'
         )
 
-    code, system = None, None
+    code, system, value = None, None, None
     if item.get('coding', None):
         try:
             code   = item['coding']['code']
             system = item['coding']['system']
+            value  = item['coding']['value']
         except KeyError:
             msg = """
 Coding entries in lookuplists must contain both `coding` and `system` values
@@ -78,7 +80,7 @@ The following lookuplist item was missing one or both values:
             raise exceptions.InvalidDataError(msg)
 
     instance, created = get_or_create_lookuplist_item(
-        model, name, code, system
+        model, name, code, system, value
     )
 
     # Handle user visible synonyms
@@ -126,6 +128,9 @@ class LookupList(models.Model):
     # include here for the sake of FHIR CodeableConcept compatibility
     version       = models.CharField(
         max_length=255, blank=True, null=True, verbose_name=_("Version")
+    )
+    value         = models.IntegerField(
+        blank=True, null=True, verbose_name=_("value")
     )
 
     class Meta:
