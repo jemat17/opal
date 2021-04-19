@@ -34,6 +34,7 @@ class Command(BaseCommand):
         self.created = 0
         self.synonyms = 0
 
+
     def from_path(self, path):
         if path:
             return path.json_load()

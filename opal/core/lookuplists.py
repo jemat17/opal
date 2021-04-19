@@ -64,8 +64,14 @@ def load_lookuplist_item(model, item):
         raise exceptions.InvalidDataError(
             'Lookuplist entries must have a name'
         )
+    value = item.get('value, None')
+    if value is None:
+        try:
+            value   = item['coding']['value']
+        except KeyError:
+            msg = ""
 
-    code, system, value = None, None, None
+    code, system = None, None
     if item.get('coding', None):
         try:
             code   = item['coding']['code']
