@@ -1349,26 +1349,8 @@ class Treatment(EpisodeSubrecord):
     HELP_START = "The date on which the patient began receiving this \
 treatment."
 
-# Clean function.
-    # https://docs.djangoproject.com/en/3.2/ref/forms/validation/
-    def clean_dose(self):
-        #dose_of_drug = self.cleaned_data.get("dose")
-        #drug_name = self.cleaned_data.get("drug")
-        dose_of_drug = self
-        drug_name = 'Abacavir'
-        print(' DOSE OF DRUG GIVEN!', type(dose_of_drug), file=sys.stderr)
-        print(' Value OF DRUG GIVEN!', dose_of_drug, file=sys.stderr)
-        # tilføj if statement der tjekker at drug findes i max value listen!
-        max_dose = getattr(maxdose.objects.get(name=drug_name), 'value')  # tilgå max_dose
-        if max_dose < dose_of_drug:
-            raise ValidationError(_('{max_dose}s must be in the range [0.0, {dose_of_drug}]'),
-                                      params={'max_dose': max_dose, 'dose_of_drug': dose_of_drug}, )
-        else:
-            return dose_of_drug
-
-
     drug = ForeignKeyOrFreeText(Drug)
-    dose = models.IntegerField(blank=True, validators=[clean_dose])
+    dose = models.IntegerField(blank=True)
     route = ForeignKeyOrFreeText(Drugroute)
     start_date = models.DateField(
         null=True, blank=True,
@@ -1379,6 +1361,17 @@ treatment."
 
     class Meta:
         abstract = True
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+        drug_name = self.drug
+        dose_of_drug = self.dose
+        # tilføj if statement der tjekker at drug findes i max value listen!
+        max_dose = getattr(maxdose.objects.get(name=drug_name), 'value')  # tilgå max_dose
+        if max_dose < dose_of_drug:
+            raise ValidationError("Invaid dose")
+        else:
+            return dose_of_drug
 
     def save(self, *args, **kwargs):
         self.full_clean()
