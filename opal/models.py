@@ -1352,14 +1352,16 @@ treatment."
 # Clean function.
     # https://docs.djangoproject.com/en/3.2/ref/forms/validation/
     def clean_dose(self):
-        dose_of_drug = self.cleaned_data.get("dose")
-        drug_name = self.cleaned_data.get("drug")
+        #dose_of_drug = self.cleaned_data.get("dose")
+        #drug_name = self.cleaned_data.get("drug")
+        dose_of_drug = self
+        drug_name = 'Abacavir'
         print(' DOSE OF DRUG GIVEN!', type(dose_of_drug), file=sys.stderr)
         print(' Value OF DRUG GIVEN!', dose_of_drug, file=sys.stderr)
         # tilføj if statement der tjekker at drug findes i max value listen!
         max_dose = getattr(maxdose.objects.get(name=drug_name), 'value')  # tilgå max_dose
         if max_dose < dose_of_drug:
-            raise ValidationError(_('%(max_dose)s must be in the range [0.0, {dose_of_drug}]'),
+            raise ValidationError(_('{max_dose}s must be in the range [0.0, {dose_of_drug}]'),
                                       params={'max_dose': max_dose, 'dose_of_drug': dose_of_drug}, )
         else:
             return dose_of_drug
@@ -1380,7 +1382,7 @@ treatment."
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        self.save()
+        super(Treatment, self).save(*args, **kwargs)
 
 
 class Allergies(PatientSubrecord):
