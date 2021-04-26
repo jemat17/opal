@@ -9,6 +9,7 @@ import json
 import logging
 import random
 import os
+import sys
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
@@ -1349,6 +1350,7 @@ class Treatment(EpisodeSubrecord):
 treatment."
 
 # Clean function.
+    # https://docs.djangoproject.com/en/3.2/ref/forms/validation/
     def clean_dose(self):
         dose_of_drug = self.cleaned_data.get("dose")
         drug_name = self.cleaned_data.get("drug")
