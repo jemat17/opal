@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
-from django.core.exceptions import FieldDoesNotExist, ValidationError
+from django.core.exceptions import FieldDoesNotExist, ValidationError, NON_FIELD_ERRORS
 from django.utils.encoding import force_str
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
@@ -1348,19 +1348,8 @@ class Treatment(EpisodeSubrecord):
     HELP_START = "The date on which the patient began receiving this \
 treatment."
 
-    def dose_of(self):
-        dose_of_drug = self.dose
-        try:
-            max_dose = maxdose.objects.filter(name=self.drug)  # tilgå max_dose
-            max_dose = max_dose.max_dose
-            if max_dose < dose_of_drug:
-                raise ValidationError(_('%(max_dose)s must be in the range [0.0, {dose_of_drug}]'),
-                                      params={'max_dose': max_dose, 'dose_of_drug': dose_of_drug}, )
-        except:
-            raise ValidationError(_('A maxdose is not specified for this drug'), )
-
     drug = ForeignKeyOrFreeText(Drug)
-    dose = models.IntegerField(maxdose, blank=True)#, validators=[dose_of])
+    dose = models.IntegerField(blank=True)
     route = ForeignKeyOrFreeText(Drugroute)
     start_date = models.DateField(
         null=True, blank=True,
@@ -1369,8 +1358,40 @@ treatment."
     end_date = models.DateField(null=True, blank=True)
     frequency = ForeignKeyOrFreeText(Drugfreq)
 
+    # Method that Checks if patient is allergic:
+    # def clean(self, *args, **kwargs):
+    #     try:
+    #         #CODE
+    #         name_of_drug =
+    #         if self.drug == name_of_drug:
+    #             raise ValidationError({
+    #                 NON_FIELD_ERRORS: ['overlapping date range', ],
+    #             })
+    #     except:
+    #         ## EXCEPTION!
     class Meta:
         abstract = True
+        fields = [
+            'drug'
+            'dose'
+            'route'
+            'start_date'
+            'end_date'
+            'frequency'
+        ]
+
+    def clean_dose(self, *args, **kwargs):
+        dose_of_drug = self.cleaned_data.get("dose")
+        try:
+            max_dose = maxdose.objects.filter(name=self.drug)  # tilgå max_dose
+            max_dose = max_dose.max_dose
+            if max_dose < dose_of_drug:
+                raise ValidationError(_('%(max_dose)s must be in the range [0.0, {dose_of_drug}]'),
+                                      params={'max_dose': max_dose, 'dose_of_drug': dose_of_drug}, )
+            else:
+                pass
+        except:
+            raise ValidationError(_('A maxdose is not specified for this drug'), )
 
 
 class Allergies(PatientSubrecord):
