@@ -1348,8 +1348,23 @@ class Treatment(EpisodeSubrecord):
     HELP_START = "The date on which the patient began receiving this \
 treatment."
 
+# Clean function.
+    def clean_dose(self):
+        dose_of_drug = self.cleaned_data.get("dose")
+        drug_name = self.cleaned_data.get("drug")
+        print(' DOSE OF DRUG GIVEN!', type(dose_of_drug), file=sys.stderr)
+        print(' Value OF DRUG GIVEN!', dose_of_drug, file=sys.stderr)
+        # tilføj if statement der tjekker at drug findes i max value listen!
+        max_dose = getattr(maxdose.objects.get(name=drug_name), 'value')  # tilgå max_dose
+        if max_dose < dose_of_drug:
+            raise ValidationError(_('%(max_dose)s must be in the range [0.0, {dose_of_drug}]'),
+                                      params={'max_dose': max_dose, 'dose_of_drug': dose_of_drug}, )
+        else:
+            return dose_of_drug
+
+
     drug = ForeignKeyOrFreeText(Drug)
-    dose = models.IntegerField(blank=True)
+    dose = models.IntegerField(blank=True, validators=[clean_dose])
     route = ForeignKeyOrFreeText(Drugroute)
     start_date = models.DateField(
         null=True, blank=True,
@@ -1358,40 +1373,12 @@ treatment."
     end_date = models.DateField(null=True, blank=True)
     frequency = ForeignKeyOrFreeText(Drugfreq)
 
-    # Method that Checks if patient is allergic:
-    # def clean(self, *args, **kwargs):
-    #     try:
-    #         #CODE
-    #         name_of_drug =
-    #         if self.drug == name_of_drug:
-    #             raise ValidationError({
-    #                 NON_FIELD_ERRORS: ['overlapping date range', ],
-    #             })
-    #     except:
-    #         ## EXCEPTION!
     class Meta:
         abstract = True
-        fields = [
-            'drug'
-            'dose'
-            'route'
-            'start_date'
-            'end_date'
-            'frequency'
-        ]
 
-    def clean_dose(self, *args, **kwargs):
-        dose_of_drug = self.cleaned_data.get("dose")
-        try:
-            max_dose = maxdose.objects.filter(name=self.drug)  # tilgå max_dose
-            max_dose = max_dose.max_dose
-            if max_dose < dose_of_drug:
-                raise ValidationError(_('%(max_dose)s must be in the range [0.0, {dose_of_drug}]'),
-                                      params={'max_dose': max_dose, 'dose_of_drug': dose_of_drug}, )
-            else:
-                pass
-        except:
-            raise ValidationError(_('A maxdose is not specified for this drug'), )
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        self.save()
 
 
 class Allergies(PatientSubrecord):
