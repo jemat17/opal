@@ -11,7 +11,6 @@ import random
 import os
 import sys
 
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.db import models, transaction
 from django.db.models import Q
@@ -19,11 +18,10 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
-from django.core.exceptions import FieldDoesNotExist, ValidationError, NON_FIELD_ERRORS
+from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.utils.encoding import force_str
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
-from django import forms
 
 from opal.core import (
     application, exceptions, lookuplists, plugins, patient_lists, tagging
@@ -35,6 +33,7 @@ from opal.core.fields import ForeignKeyOrFreeText
 from opal.core.subrecords import (
     episode_subrecords, patient_subrecords, get_subrecord_from_api_name
 )
+from opal.core.search import queries
 
 
 def get_default_episode_type():
@@ -1361,21 +1360,6 @@ treatment."
 
     class Meta:
         abstract = True
-
-    def clean_fields(self, exclude=None):
-        super().clean_fields(exclude=exclude)
-        drug_name = self.drug
-        dose_of_drug = self.dose
-        # tilføj if statement der tjekker at drug findes i max value listen!
-        max_dose = getattr(maxdose.objects.get(name=drug_name), 'value')  # tilgå max_dose
-        if max_dose < dose_of_drug:
-            raise ValidationError("Invaid dose")
-        else:
-            return dose_of_drug
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super(Treatment, self).save(*args, **kwargs)
 
 
 class Allergies(PatientSubrecord):
