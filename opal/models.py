@@ -33,7 +33,6 @@ from opal.core.fields import ForeignKeyOrFreeText
 from opal.core.subrecords import (
     episode_subrecords, patient_subrecords, get_subrecord_from_api_name
 )
-from opal.core.search import queries
 
 
 def get_default_episode_type():
