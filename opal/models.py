@@ -1185,9 +1185,12 @@ class Destination(lookuplists.LookupList):
 class Drug(lookuplists.LookupList):
     pass
 
+class ICD10codes(lookuplists.LookupList):
+    pass
 
 class maxdose(lookuplists.LookupList):
     pass
+
 
 
 class Drugfreq(lookuplists.LookupList):
